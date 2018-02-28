@@ -95,7 +95,7 @@ int main(void) {
                 if (CHILD_PID(childPid)) {
                     /* The child shell continues to process the command line */
                     proccess_line(line, &lineIndex, args);
-                } else {
+                } else 
                     /*
                      * TODO:  Write code here to wait for the child process to die.  When the
                      * child finally does die, include a printf that prints a message like:
@@ -107,13 +107,12 @@ int main(void) {
                      */
 
 
+                    if(childPid  == 0){
+                        printf("Child %d has exited with status 0", childPid);
+                        else{
 
-
-
-
-
-
-
+                           childPid =  waitpid(-1,NULL,NULL);
+                            }
                 }
             }
         }
@@ -209,7 +208,6 @@ void proccess_line(char** line, int* lineIndex, char** args) {
  * line      - An array of pointers to string corresponding to ALL of the
  *             tokens entered on the command line.
  * lineIndex - A pointer to the index of the next token to be processed.
- *             This index should point to one element beyond the pipe
  *             symbol.
  */
 void do_pipe(char** p1Args, char** line, int* lineIndex) {
@@ -327,6 +325,7 @@ void pipe_wrapper(int pipefds[]) {
     /*                                                                          
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can
      * be used for interprocess communication. Check the return value of pipe -- if it
+     * is less than 0, use perror() to print an error message and the _exit system call to
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
      */                                                                         
