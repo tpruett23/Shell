@@ -1,4 +1,9 @@
 #include "shell.h"
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /**
  * do_file_list
@@ -14,7 +19,7 @@ void do_file_list(char** args) {
      * TODO: Write code here that will list the content of the specified directory (or if no
      * directory was specified, the current directory).
      */                                                                         
-if(args[1] == NULL){
+    if(args[1] == NULL){
 
 
 
@@ -28,37 +33,39 @@ if(args[1] == NULL){
 
 
 
-}
-
-/**
- * do_file_remove
- *
- * Implements a built-in version of the 'rm' command.
- *
- * args - An array of strings corresponding to the command and its arguments.
- *        args[0] is "rm", additional arguments are in args[1] ... n.
- *        args[x] = NULL indicates the end of the argument list.
- */
-void do_file_remove(char** args) {
-    /*                                                                          
-     * TODO: Write code here that will remove the specified list of files.  If no file list is
-     * specified, print a usage message.
-     */                                                                         
-int i = 1;
-int s;
-if(sizeof(args)== 0){
-    printf(stdout, "Usage: rm, filename1,filename2...");
-}else{
-
-for(i; i < sizeof(args);i++){
-int s = unlink(args[i]);
-}
-if(s == -1){
-    perror("Error performing file removal");
     }
-}
 
-}
+    /**
+     * do_file_remove
+     *
+     * Implements a built-in version of the 'rm' command.
+     *
+     * args - An array of strings corresponding to the command and its arguments.
+     *        args[0] is "rm", additional arguments are in args[1] ... n.
+     *        args[x] = NULL indicates the end of the argument list.
+     */
+    void do_file_remove(char** args) {
+        /*                                                                          
+         * TODO: Write code here that will remove the specified list of files.  If no file list is
+         * specified, print a usage message.
+         */                                                                         
+
+        int i = 1;
+        int s;
+        if(sizeof(args)== 0){
+            printf(stdout, "Usage: rm, filename1,filename2...");
+        }else{
+
+            for(i; i < sizeof(args);i++){
+                int fd =  open(args[i],O_TRUNC);
+                int s = unlink(fd);
+            }
+            if(s == -1){
+                printf("%s\n", strerror(errno));
+            }
+        }
+
+    }
 
 
 
