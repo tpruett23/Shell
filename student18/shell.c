@@ -1,5 +1,4 @@
-/*
- * shell.c
+/* shell.c
  *
  * Written by Dr. William Kreahling
  *            Department of Mathematics and Computer Science
@@ -78,7 +77,8 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-
+            char* origline = args; // remember the original argumnets 
+            
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
@@ -150,12 +150,7 @@ void proccess_line(char** line, int* lineIndex, char** args) {
          * Replace the call to the 'exit' system call below with code to replace this in-memory
          * process image with an instance of the specified program.
          */
-
-
-
-
-
-
+        
         _exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
@@ -328,8 +323,11 @@ void pipe_wrapper(int pipefds[]) {
      * is less than 0, use perror() to print an error message and the _exit system call to
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
-     */                                                                         
-    
+     */
+    if(pipefds.size() < 2){
+        printf("Not enough arguments for pipe");
+        end 
+    }
 
 }
 
