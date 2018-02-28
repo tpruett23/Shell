@@ -329,10 +329,7 @@ void pipe_wrapper(int pipefds[]) {
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
      */                                                                         
-
-
-
-
+    
 
 }
 
@@ -348,11 +345,13 @@ int dup_wrapper(int oldfd) {
      * nothing has gone wrong.  Check the return value of dup -- if it is less than 0, use perror()
      * to print an error message and the _exit system call to terminate the program.
      */                                                                         
+    int rfd = dup(oldfd); //initialize a return file descripter;
+    if(rfd < 0){
+        printf("%s\n", strerror(errno));
+        _exit(EXIT_FAILURE);
+    }
 
-
-
-
-
+    return rfd;
 }
 
 /*
