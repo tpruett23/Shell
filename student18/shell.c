@@ -1,4 +1,5 @@
 /* shell.c
+ * @Authors Melchor Dominguez
  *
  * Written by Dr. William Kreahling
  *            Department of Mathematics and Computer Science
@@ -52,6 +53,7 @@ static pid_t childPid = 0;
  */
 int main(void) {
     char** line;
+    char history[HIST_SIZE];
 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
@@ -79,6 +81,7 @@ int main(void) {
             /* TODO: Somewhere here remember commands executed*/
             char* origline = args; // remember the original argumnets 
             
+            
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
@@ -87,7 +90,7 @@ int main(void) {
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
             } else if (strcmp(args[0], "history") == 0) {
-                do_history(args);
+                do_history(args, history);
             } else {
                 /* Fork off a child process */
                 childPid = fork_wrapper();
@@ -213,6 +216,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can be
      * used for interprocess communication.
      */
+    pipe(pipefd);
 
     /* Fork the current process */
     pid = fork_wrapper();
@@ -223,11 +227,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * connect this processes standard output stream to the output side of the pipe in pipefd.
          * Close any unnecessary file descriptors.
          */
-        
-
-
-
-
+        char* buffer = Malloc(sizeof(char), 1024) //define size later
 
         /*
          * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
