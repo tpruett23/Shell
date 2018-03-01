@@ -229,7 +229,6 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
         char* buffer = Malloc(sizeof(char), 1024) //define size later
 
-
         /*
          * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
          * below with code to replace this in-memeory process image with an instance of the

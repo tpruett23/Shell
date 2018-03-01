@@ -13,8 +13,14 @@ void append_redirection(char* filename) {
      * the specified name.  The output should be appended to the file if the file already exists.
      */
 
-
-
+    int fd = dup(1);
+    close(1);
+    int fd2 = open(filename,O_APPEND | O_CREAT);
+    if(fd2 < 0){
+        perror(fd2);
+        _exit(EXIT_FAILURE);
+    }
+    
 
 
 
@@ -33,11 +39,15 @@ void stdout_redirection(char* filename) {
      * the specified name.  If the file already exists, its contents should be truncated before
      * this process writes to the file.
      */
-
-
-
-
-
+        
+     int fd = dup(1);
+    close(1);
+    int fd2 = open(filename,O_TRUNC | O_CREAT);
+     if(fd2 < 0){
+        perror(fd2);
+        _exit(EXIT_FAILURE);
+    }
+    
 
 }
 /*
@@ -54,11 +64,14 @@ void stderr_redirection(char* filename) {
      * process writes to the file.
      */
 
-
-
-
-
-
+  int fd = dup(2);
+    close(2);
+    int fd2 = open(filename,O_TRUNC | O_CREAT);
+     if(fd2 < 0){
+        perror(fd2);
+        _exit(EXIT_FAILURE);
+    }
+    
 }
 
 /*
@@ -76,8 +89,7 @@ void stdout_stderr_redirection(char* filename) {
      * truncated before this process writes to the file.
      */
 
-
-
+     
 
 
 
@@ -95,6 +107,18 @@ void stdin_redirection(char* filename) {
      * TODO:  Write code to cause the standard input of this process to be read from a file with
      * the specified name.
      */
+
+     int fd = dup(0);
+          close(0);
+        int fd2 = open(filename,O_TRUNC);
+        int 
+            if(fd2 < 0){
+                perror(fd2);
+               _exit(EXIT_FAILURE);
+    }
+    
+
+}
 
 
 
