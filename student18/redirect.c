@@ -88,10 +88,12 @@ void stdout_stderr_redirection(char* filename) {
      * sent to a file with the specified name.  If the file already exists, its contents should be
      * truncated before this process writes to the file.
      */
-
-     
-
-
+        int fd = dup(1);
+        int fd2 = dup(2);
+        close(2)
+        close(1);
+        int fd3 = open(filename,O_TRUNC | O_CREAT);
+        int dupp = dup2(2,fd3);
 
 
 }
