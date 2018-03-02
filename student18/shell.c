@@ -1,5 +1,5 @@
 /* shell.c
- * @Authors Melchor Dominguez & Melchor Dominguez
+ * @Authors Melchor Dominguez & Tori Pruett
  *
  * Written by Dr. William Kreahling
  *            Department of Mathematics and Computer Science
