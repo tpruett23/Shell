@@ -13,17 +13,16 @@ void append_redirection(char* filename) {
      * the specified name.  The output should be appended to the file if the file already exists.
      */
 
-    int fd = dup(1);
-    close(1);
-    int fd2 = open(filename,O_APPEND | O_CREAT);
-    if(fd2 < 0){
+    int fd = dup(1); //remember original stdout
+    close(1); //close stdout
+    int fd2 = open(filename, O_APPEND | O_CREAT, 0644); //new stdout
+
+    if(!fd2){
         perror(fd2);
+        dup(fd);
         _exit(EXIT_FAILURE);
-    }
+    }//end if
     
-
-
-
 }
 
 /*
@@ -39,14 +38,16 @@ void stdout_redirection(char* filename) {
      * the specified name.  If the file already exists, its contents should be truncated before
      * this process writes to the file.
      */
-        
-     int fd = dup(1);
-    close(1);
-    int fd2 = open(filename,O_TRUNC | O_CREAT);
-     if(fd2 < 0){
+            
+    int fd = dup(1); //remember original stdout
+    close(1); //close stdout
+    int fd2 = open(filename,O_TRUNC | O_CREAT, 0644); //new stdout
+    
+    if(!fd2){
         perror(fd2);
+        dup(fd);
         _exit(EXIT_FAILURE);
-    }
+    }//end if
     
 
 }
@@ -64,15 +65,17 @@ void stderr_redirection(char* filename) {
      * process writes to the file.
      */
 
-  int fd = dup(2);
-    close(2);
-    int fd2 = open(filename,O_TRUNC | O_CREAT);
-     if(fd2 < 0){
-        perror(fd2);
-        _exit(EXIT_FAILURE);
-    }
+    int fd = dup(2); //remember stderror
+    close(2); //close stderr
+    int fd2 = open(filename,O_TRUNC | O_CREAT); //new stderr
     
-}
+    if(fd2 < 0){
+        perror(fd2);
+        dup(fd);
+        _exit(EXIT_FAILURE);
+    }//end if
+    
+}//end stderr_redirection
 
 /*
  * stdout_stderr_redirection
@@ -88,12 +91,19 @@ void stdout_stderr_redirection(char* filename) {
      * sent to a file with the specified name.  If the file already exists, its contents should be
      * truncated before this process writes to the file.
      */
-        int fd = dup(1);
-        int fd2 = dup(2);
-        close(2)
-        close(1);
-        int fd3 = open(filename,O_TRUNC | O_CREAT);
-        int dupp = dup2(2,fd3);
+        int fd = dup(1); //remember stdout
+        int fd2 = dup(2); //remember stderr
+        close(2); //close stderr
+        close(1); //close stdout
+        int fd3 = open(filename,O_TRUNC | O_CREAT); //new stdout
+
+        if(!fd3){
+            dup(fd);
+            dup(fd2);
+            perror(fd3);
+            _exit(EXIT_FAILURE);
+        }
+        int dup = dup(fd3);
 
 
 }
@@ -110,16 +120,15 @@ void stdin_redirection(char* filename) {
      * the specified name.
      */
 
-     int fd = dup(0);
-          close(0);
-        int fd2 = open(filename,O_TRUNC);
-        int 
-            if(fd2 < 0){
-                perror(fd2);
-               _exit(EXIT_FAILURE);
-    }
-    
+    int fd = dup(0);//remember stdin
+    close(0); //close stdin
+    int fd2 = open(filename,O_TRUNC); //new stdin
 
+    if(!fd2){
+        perror(fd2);
+        dup(fd);
+        _exit(EXIT_FAILURE);
+    }
 }
 
 
