@@ -153,8 +153,14 @@ void proccess_line(char** line, int* lineIndex, char** args) {
          * Replace the call to the 'exit' system call below with code to replace this in-memory
          * process image with an instance of the specified program.
          */
-        
-        _exit(1);
+      
+        int replace = execve("PATH",line,args);// need to figure out about path
+        if(replace == -1){
+        printf("%s\n", strerror(errno));
+        }
+
+
+        //_exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
         append_redirection(line[*lineIndex]);
@@ -227,6 +233,24 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * connect this processes standard output stream to the output side of the pipe in pipefd.
          * Close any unnecessary file descriptors.
          */
+
+
+          close(pipefd[1]);
+
+            int rd = dup2(STDIN_FILENO, pipefd[1]);
+
+            if(rd < 0){
+                printf("%s\n",stderr("Standard Output Error");//Use better error message later.
+                _exit(1);
+            }
+
+
+
+
+
+
+
+
         char* buffer = Malloc(sizeof(char), 1024) //define size later
 
         /*
@@ -234,7 +258,19 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * below with code to replace this in-memeory process image with an instance of the
          * specified program.  (Here, in p1Args)
          */
-        _exit(1);
+        
+
+
+        int ex = execl();
+        if(ex == -1){
+
+
+        }
+
+
+
+
+        //_exit(1);
 
     } else {  /* Parent will keep going */
         char* args[MAX_ARGS];
@@ -245,6 +281,16 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
+
+
+            close(pipefd[0]);
+
+            int rd = dup2(STDIN_FILENO, pipefd[0]);
+
+            if(rd < 0){
+                printf("%s\n",stderr("Standard Input Error");
+                _exit(1);
+            }
 
 
 
