@@ -18,11 +18,15 @@ void do_file_list(char** args) {
     /*                                                                          
      * TODO: Write code here that will list the content of the specified directory (or if no
      * directory was specified, the current directory).
-     */                                                                         
+     */ 
+    
+    
+    
+                                                                            
     if(args[1] == NULL){
 
 
-
+    
 
 
 
