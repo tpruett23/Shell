@@ -52,7 +52,7 @@ void do_file_list(char** args) {
 
         int i = 1;
         int s;
-        if(sizeof(args)== 0){
+        if(sizeof(args)== 1){
             printf(stdout, "Usage: rm, filename1,filename2...");
         }else{
 
@@ -66,13 +66,6 @@ void do_file_list(char** args) {
         }
 
     }
-
-
-
-
-
-
-
 }
 /**
  * do_touch

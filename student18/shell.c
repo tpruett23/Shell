@@ -108,7 +108,7 @@ int main(void) {
                      *        Where 123 here is the process id of the child and 0 is the exit
                      *        status of that process.
                      */
-
+                    
 
                     if(childPid  == 0){
                         printf("Child %d has exited with status 0", childPid);
