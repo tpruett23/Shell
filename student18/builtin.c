@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#define num_bytes 1024
+
 /**
  * do_file_list
  *
@@ -18,59 +20,73 @@ void do_file_list(char** args) {
     /*                                                                          
      * TODO: Write code here that will list the content of the specified directory (or if no
      * directory was specified, the current directory).
-     */ 
-    
-    
-    
-                                                                            
-    if(args[1] == NULL){
-
-
-    
-
-
-
-
-
-
-
-
-
-
-    }
-
-    /**
-     * do_file_remove
-     *
-     * Implements a built-in version of the 'rm' command.
-     *
-     * args - An array of strings corresponding to the command and its arguments.
-     *        args[0] is "rm", additional arguments are in args[1] ... n.
-     *        args[x] = NULL indicates the end of the argument list.
      */
-    void do_file_remove(char** args) {
-        /*                                                                          
-         * TODO: Write code here that will remove the specified list of files.  If no file list is
-         * specified, print a usage message.
-         */                                                                         
+    
+    int fdR;
+    if(args[1] == NULL){
+        fdR = open("./", ORDONLY); //Open the current directory for read only    
+    }else{
+        fdR = open(args[1], ORDONLY); //Open specified directory for read only
+    }//end if
 
-        int i = 1;
-        int s;
-        if(sizeof(args)== 1){
-            printf(stdout, "Usage: rm, filename1,filename2...");
-        }else{
 
-            for(i; i < sizeof(args);i++){
-                int fd =  open(args[i],O_TRUNC);
-                int s = unlink(fd);
-            }
-            if(s == -1){
-                printf("%s\n", strerror(errno));
-            }
-        }
+    int char* temp = Malloc(sizeof(char), num_bytes);
 
-    }
+    int num = read(fdR, temp, num_bytes);
+    
+    while(num > 0){
+        int num2 = write(1, temp, strlen(temp));
+        if(num2 < 0){
+            printf("error in writing to destination\n");
+            _exit(EXIT_FAILURE);
+        }//end if 
+        num = read(fdR, temp, num_bytes); //attempt to read another num of bytes
+    }//end while
+
+    free(temp);
+    temp = NULL;
+
+    if(num < 0){
+        printf("Failure in reading file\n");
+        _exit(EXIT_FAILURE);
+    }//end if
+
+    close(fdR); //close reading file
+    fflush(stdout);
 }
+/**
+ * do_file_remove
+ *
+ * Implements a built-in version of the 'rm' command.
+ *
+ * args - An array of strings corresponding to the command and its arguments.
+ *        args[0] is "rm", additional arguments are in args[1] ... n.
+ *        args[x] = NULL indicates the end of the argument list.
+ */
+void do_file_remove(char** args) {
+    /*                                                                          
+     * TODO: Write code here that will remove the specified list of files.  If no file list is
+     * specified, print a usage message.
+     */                                                                         
+
+    int i = 1;
+    int s;
+    if(sizeof(args)== 1){
+        printf(stdout, "Usage: rm, filename1,filename2...");
+    }else{
+
+        for(i; i < sizeof(args);i++){
+            int fd =  open(args[i],O_TRUNC);
+            int s = unlink(fd);
+        }
+        if(s == -1){
+            printf("%s\n", strerror(errno));
+        }
+    }
+
+}
+}
+
 /**
  * do_touch
  *
@@ -93,6 +109,7 @@ void do_touch(char** args) {
 
 
 }
+
 /**
  * do_history
  *
