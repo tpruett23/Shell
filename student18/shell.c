@@ -153,10 +153,13 @@ void proccess_line(char** line, int* lineIndex, char** args) {
          * Replace the call to the 'exit' system call below with code to replace this in-memory
          * process image with an instance of the specified program.
          */
+
+        char* prog = args[0];
       
-        int replace = execve("PATH",line,args);// need to figure out about path
+        int replace = execvp(prog,args);
         if(replace == -1){
         printf("%s\n", strerror(errno));
+        _exit(EXIT_FAILURE);
         }
 
 
@@ -240,13 +243,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
             int rd = dup2(STDIN_FILENO, pipefd[1]);
 
             if(rd < 0){
-                printf("%s\n",stderr("Standard Output Error");//Use better error message later.
+                printf("%s\n",stderr("Standard Output Error"));//Use better error message later.
                 _exit(1);
             }
-
-
-
-
 
 
 
@@ -259,15 +258,14 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * specified program.  (Here, in p1Args)
          */
         
+          char* prog = args[0];
+      
+        int replace = execvp(prog,args);
 
-
-        int ex = execl();
-        if(ex == -1){
-
-
+        if(replace == -1){
+        printf("%s\n", strerror(errno));
+        _exit(EXIT_FAILURE);
         }
-
-
 
 
         //_exit(1);
