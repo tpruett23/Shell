@@ -24,9 +24,9 @@ void do_file_list(char** args) {
     
     int fdR;
     if(args[1] == NULL){
-        fdR = open("./", ORDONLY); //Open the current directory for read only    
+        fdR = open("./", O_DIRECTORY); //Open the current directory for read only    
     }else{
-        fdR = open(args[1], ORDONLY); //Open specified directory for read only
+        fdR = open(args[1], O_DIRECTORY); //Open specified directory for read only
     }//end if
 
 
@@ -102,12 +102,11 @@ void do_touch(char** args) {
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
      */                                                                         
 
-
-
-
-
-
-
+    for(int i = 0; i < sizeof(args); i++){
+        // create specified file, if file already exists time stampt is updated
+        int fd = open(args[i], O_CREAT, 0644);
+        close(fd);
+    }//end for 
 }
 
 /**
