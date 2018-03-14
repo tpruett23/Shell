@@ -47,6 +47,7 @@
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
+void sigHandler();
 
 /*
  * Entry point of the application
@@ -61,8 +62,21 @@ int main(void) {
      * signal is what gets sent to a process when you hit Ctrl-C).  The implementation of your
      * signal hander should deliver the received signal to the process with pid 'childPid'
      * (above).  Note that when 'childPid' contains 0, the signal should be ignored.
-     */
+     */            
+    
+                                                                                                                
+    signal(SIGINT, sigHandler);
+    void sigHandler(int sig){
+        if(childPid != 0){
 
+        kill(childPid,sig);
+
+    }
+    }
+
+    
+                                                                                                     
+        
     /* Read a line of input from the keyboard */
     line = prompt_and_read();
     
