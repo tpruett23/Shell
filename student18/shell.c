@@ -322,20 +322,20 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
                     /* And keep going... */
                     proccess_line(line, lineIndex, args);
                     }
-                    }
+}
 
-                    /*
-                     * parse_args
-                     *
-                     * Parse the command line, stopping at a special symbol of the end of the line.
-                     *
-                     * args      - The array to populate with arguments from line
-                     * line      - An array of pointers to string corresponding to ALL of the
-                     *             tokens entered on the command line.
-                     * lineIndex - A pointer to the index of the next token to be processed.
-                     *             This index should point to one element beyond the pipe
-                     *             symbol.
-                     */
+/*
+ * parse_args
+ *
+ * Parse the command line, stopping at a special symbol of the end of the line.
+ *
+ * args      - The array to populate with arguments from line
+ * line      - An array of pointers to string corresponding to ALL of the
+ *             tokens entered on the command line.
+ * lineIndex - A pointer to the index of the next token to be processed.
+ *             This index should point to one element beyond the pipe
+ *             symbol.
+ */
 void parse_args(char** args, char** line, int* lineIndex) {
     int i;
 
@@ -390,9 +390,14 @@ void pipe_wrapper(int pipefds[]) {
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
      */
-    if(pipefds.size() < 2){
+    if(sizeof(pipefds) < 2){
         printf("Not enough arguments for pipe");
-        end 
+        _exit(EXIT_FAILURE);
+    }//end if
+    int check = pipe(pipefds);
+    if(check < 0){
+        printf("error in pipe");
+        _exit(EXIT_FAILURE);
     }
 
 }
