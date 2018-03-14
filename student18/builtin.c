@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define num_bytes 1024
+#define num_bytes 256
 
 /**
  * do_file_list
