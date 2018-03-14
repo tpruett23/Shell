@@ -14,7 +14,7 @@ void add_history(char* args, char hist[]){
 
 /**
  * Will execute the history command 
- */
+ *
 void do_history(char* args, char hist[]){
     add_history(args,hist);
     int i;
@@ -22,4 +22,4 @@ void do_history(char* args, char hist[]){
         printf(stdout,hist[i] + "\n");
 
     }
-}
+} */ 

@@ -75,6 +75,7 @@ int main(void) {
 
         }
     }
+    
     /* Read a line of input from the keyboard */
     line = prompt_and_read();
 
@@ -92,7 +93,15 @@ int main(void) {
 
             /* TODO: Somewhere here remember commands executed*/
             char* origline = args; // remember the original argumnets 
-
+            if(sizeof(history) >= HIST_SIZE){
+                for(int elem = 0; elem < sizeof(history); elem++){
+                    if(elem != 0)
+                        history[elem -1] = history[elem];
+                }
+                history[sizeof(history)] = origline;
+            }else{
+                history[sizeof(history)] = origline;
+            }
 
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
@@ -102,7 +111,7 @@ int main(void) {
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
             } else if (strcmp(args[0], "history") == 0) {
-                do_history(args, history);
+                do_history(history);
             } else {
                 /* Fork off a child process */
                 childPid = fork_wrapper();

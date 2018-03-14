@@ -102,7 +102,7 @@ void do_touch(char** args) {
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
      */                                                                         
 
-    for(int i = 0; i < sizeof(args); i++){
+    for(int i = 1; i < sizeof(args); i++){
         // create specified file, if file already exists time stampt is updated
         int fd = open(args[i], O_CREAT, 0644);
         close(fd);
@@ -126,12 +126,8 @@ void do_history(char** args) {
     /*                                                                          
      * TODO: Write code here that will print the last n command exeuted via this shell.
      */                                                                         
-
-
-
-
-
-
-
-
+   
+   for(int list = 0; list < sizeof(history); list++){
+        fprintf(stdout, history[list] + "\n");
+   }
 }
