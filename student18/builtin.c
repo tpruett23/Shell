@@ -30,12 +30,12 @@ void do_file_list(char** args) {
     }//end if
 
 
-    int char* temp = Malloc(sizeof(char), num_bytes);
+    char* temp = Malloc(sizeof(char), num_bytes);
 
     int num = read(fdR, temp, num_bytes);
     
     while(num > 0){
-        int num2 = write(1, temp, strlen(temp));
+        int num2 = write(1, temp, sizeof(temp));
         if(num2 < 0){
             printf("error in writing to destination\n");
             _exit(EXIT_FAILURE);
@@ -72,19 +72,18 @@ void do_file_remove(char** args) {
     int i = 1;
     int s;
     if(sizeof(args)== 1){
-        printf(stdout, "Usage: rm, filename1,filename2...");
+        fprintf(stdout, "Usage: rm, filename1,filename2...");
     }else{
 
         for(i; i < sizeof(args);i++){
             int fd =  open(args[i],O_TRUNC);
-            int s = unlink(fd);
+            int s = unlink("./"+args[i]);
         }
         if(s == -1){
             printf("%s\n", strerror(errno));
         }
     }
 
-}
 }
 
 /**

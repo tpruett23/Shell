@@ -41,22 +41,21 @@
 #define PARENT_PID(pid) ((pid) > 0)
 #define CHILD_PID(pid)  ((pid) == 0)
 
-void signalHandler(int num);
 
 /*
  * A global variable representing the process ID of this shell's child.
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
-void sigHandler();
 
 /*
  * Entry point of the application
  */
 int main(void) {
     char** line;
-    history[HIST_SIZE];
-    bzero(history, HIST_SIZE);
+    char* history[HIST_SIZE];
+    extern char** history;
+    bzero(&history, HIST_SIZE);
 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
@@ -67,8 +66,8 @@ int main(void) {
      */            
 
 
-    signal(SIGINT, sigHandler);
-    void sigHandler(int sig){
+    signal(SIGINT, signal_handler);
+    void signal_handler(int sig){
         if(childPid != 0){
 
             kill(childPid,sig);

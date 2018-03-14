@@ -5,6 +5,7 @@
  *
  * A c file to add extra methods for helping the shell
  */
+#include <stdio.h>
 
 /**
  * Allocate space on the heap and check for error
