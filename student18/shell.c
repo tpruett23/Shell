@@ -41,6 +41,7 @@
 #define PARENT_PID(pid) ((pid) > 0)
 #define CHILD_PID(pid)  ((pid) == 0)
 
+void signalHandler(int num);
 
 /*
  * A global variable representing the process ID of this shell's child.
@@ -53,7 +54,8 @@ static pid_t childPid = 0;
  */
 int main(void) {
     char** line;
-    char history[HIST_SIZE];
+    history[HIST_SIZE];
+    bzero(history, HIST_SIZE);
 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
@@ -63,9 +65,10 @@ int main(void) {
      * (above).  Note that when 'childPid' contains 0, the signal should be ignored.
      */
 
+
     /* Read a line of input from the keyboard */
     line = prompt_and_read();
-    
+
     /* While the line was blank or the user didn't type exit */
     while (line[0] == NULL || (strcmp(line[0], "exit") != 0)) {
         int lineIndex = 0; /* An index into the line array */
@@ -80,8 +83,8 @@ int main(void) {
 
             /* TODO: Somewhere here remember commands executed*/
             char* origline = args; // remember the original argumnets 
-            
-            
+
+
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
@@ -108,15 +111,15 @@ int main(void) {
                      *        Where 123 here is the process id of the child and 0 is the exit
                      *        status of that process.
                      */
-                    
+
 
                     if(childPid  == 0){
                         printf("Child %d has exited with status 0", childPid);
                         else{
 
-                           childPid =  waitpid(-1,NULL,NULL);
-                            }
-                }
+                            childPid =  waitpid(-1,NULL,NULL);
+                        }
+                    }
             }
         }
 
@@ -155,11 +158,11 @@ void proccess_line(char** line, int* lineIndex, char** args) {
          */
 
         char* prog = args[0];
-      
+
         int replace = execvp(prog,args);
         if(replace == -1){
-        printf("%s\n", strerror(errno));
-        _exit(EXIT_FAILURE);
+            printf("%s\n", strerror(errno));
+            _exit(EXIT_FAILURE);
         }
 
 
@@ -203,6 +206,7 @@ void proccess_line(char** line, int* lineIndex, char** args) {
         (*lineIndex)++;
         do_pipe(args, line, lineIndex);
         /* do_pipe() calls proccess_line() only in some cases */
+
     }
 }
 
@@ -238,33 +242,33 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
 
 
-          close(pipefd[1]);
+        close(pipefd[1]);
 
-            int rd = dup2(STDIN_FILENO, pipefd[1]);
+        int rd = dup2(STDIN_FILENO, pipefd[1]);
 
-            if(rd < 0){
-                printf("%s\n",stderr("Standard Output Error"));//Use better error message later.
-                _exit(1);
-            }
+        if(rd < 0){
+            printf("%s\n",stderr("Standard Output Error"));//Use better error message later.
+            _exit(1);
+        }
 
 
 
 
         char* buffer = Malloc(sizeof(char), 1024) //define size later
 
-        /*
-         * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
-         * below with code to replace this in-memeory process image with an instance of the
-         * specified program.  (Here, in p1Args)
-         */
-        
-          char* prog = args[0];
-      
+            /*
+             * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
+             * below with code to replace this in-memeory process image with an instance of the
+             * specified program.  (Here, in p1Args)
+             */
+
+            char* prog = args[0];
+
         int replace = execvp(prog,args);
 
         if(replace == -1){
-        printf("%s\n", strerror(errno));
-        _exit(EXIT_FAILURE);
+            printf("%s\n", strerror(errno));
+            _exit(EXIT_FAILURE);
         }
 
 
@@ -281,44 +285,44 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
 
 
-            close(pipefd[0]);
+        close(pipefd[0]);
 
-            int rd = dup2(STDIN_FILENO, pipefd[0]);
+        int rd = dup2(STDIN_FILENO, pipefd[0]);
 
-            if(rd < 0){
-                printf("%s\n",stderr("Standard Input Error");
-                _exit(1);
-            }
-
-
+        if(rd < 0){
+            printf("%s\n",stderr("Standard Input Error");
+                    _exit(1);
+                    }
 
 
 
-        /* Read the args for the next process in the pipeline */
-        parse_args(args, line, lineIndex);
 
-        /* And keep going... */
-        proccess_line(line, lineIndex, args);
-    }
-}
 
-/*
- * parse_args
- *
- * Parse the command line, stopping at a special symbol of the end of the line.
- *
- * args      - The array to populate with arguments from line
- * line      - An array of pointers to string corresponding to ALL of the
- *             tokens entered on the command line.
- * lineIndex - A pointer to the index of the next token to be processed.
- *             This index should point to one element beyond the pipe
- *             symbol.
- */
+                    /* Read the args for the next process in the pipeline */
+                    parse_args(args, line, lineIndex);
+
+                    /* And keep going... */
+                    proccess_line(line, lineIndex, args);
+                    }
+                    }
+
+                    /*
+                     * parse_args
+                     *
+                     * Parse the command line, stopping at a special symbol of the end of the line.
+                     *
+                     * args      - The array to populate with arguments from line
+                     * line      - An array of pointers to string corresponding to ALL of the
+                     *             tokens entered on the command line.
+                     * lineIndex - A pointer to the index of the next token to be processed.
+                     *             This index should point to one element beyond the pipe
+                     *             symbol.
+                     */
 void parse_args(char** args, char** line, int* lineIndex) {
     int i;
 
     for (i = 0;    line[*lineIndex] != NULL
-                && !is_special(line[*lineIndex]); ++(*lineIndex), ++i) {
+            && !is_special(line[*lineIndex]); ++(*lineIndex), ++i) {
         args[i] = line[*lineIndex];
     }
     args[i] = NULL;
@@ -404,6 +408,6 @@ int dup_wrapper(int oldfd) {
  */
 bool is_special(char* token) {
     return    (strlen(token) == 1 && strchr("<>|!", token[0]) != NULL)
-           || (strlen(token) == 2 && strchr(">",    token[1]) != NULL);
+        || (strlen(token) == 2 && strchr(">",    token[1]) != NULL);
 }
 
