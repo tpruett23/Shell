@@ -16,12 +16,13 @@
     #include "history.h"
     #include "extra.h"
     
+    #define LINE_SIZE 256
     #define HIST_SIZE 40
     /* Macros to test whether a process ID is a parent's or a child's. */
     #define PARENT_PID(pid) ((pid) > 0)
     #define CHILD_PID(pid)  ((pid) == 0)
     
-    extern char* history[HIST_SIZE];
+    extern char history[HIST_SIZE][LINE_SIZE];
 
     /* Function prototypes */
     char** prompt_and_read(void);

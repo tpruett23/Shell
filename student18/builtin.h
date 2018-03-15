@@ -7,7 +7,9 @@
     #include <unistd.h>
     #include <sys/stat.h>
     #include <fcntl.h>
-
+    #include <dirent.h>
+    
+    struct dirent *reaaddir(DIR *dir); //struct for reading directory
     void   do_pipe(char** , char** , int*);
     void   do_file_list(char**);
     void   do_file_remove(char**);

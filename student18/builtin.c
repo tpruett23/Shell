@@ -23,39 +23,29 @@ void do_file_list(char** args) {
      * TODO: Write code here that will list the content of the specified directory (or if no
      * directory was specified, the current directory).
      */
-    
-    int fdR;
-    if(args[1] == NULL){
-        fdR = open("./", O_DIRECTORY); //Open the current directory for read only    
-    }else{
-        fdR = open(args[1], O_DIRECTORY); //Open specified directory for read only
-    }//end if
-
-
-    char* temp = malloc(sizeof(char) * num_bytes);
-
-    int num = read(fdR, temp, num_bytes);
-    
-    while(num > 0){
-        int num2 = write(1, temp, sizeof(temp));
-        if(num2 < 0){
-            printf("error in writing to destination\n");
-            _exit(EXIT_FAILURE);
-        }//end if 
-        num = read(fdR, temp, num_bytes); //attempt to read another num of bytes
-    }//end while
-
-    free(temp);
-    temp = NULL;
-
-    if(num < 0){
-        printf("Failure in reading file\n");
+     
+     DIR* curDir;
+     if(args[1] == NULL){
+        curDir = opendir("./");
+     }else{
+        curDir = opendir(args[1]);
+     }
+        
+     if(curDir == NULL){
+        printf("%s\n", strerror(errno));
+        fflush(stdout);
         _exit(EXIT_FAILURE);
-    }//end if
+     }//end if
+        
+     struct dirent *entry;
+     while( (entry = readdir(curDir)) != NULL)
+         printf(" %s\n", entry->d_name);
 
-    close(fdR); //close reading file
-    fflush(stdout);
-}
+     fflush(stdout);
+     closedir(curDir);
+
+}//end do_file_list()
+
 /**
  * do_file_remove
  *
@@ -71,28 +61,26 @@ void do_file_remove(char** args) {
      * specified, print a usage message.
      */                                                                         
 
-    
-    if(sizeof(args)== 1){
-        fprintf(stdout, "Usage: rm, filename1,filename2...");
-    }else{
-        size_t i = 1;
-        size_t numElem = sizeof(args)/sizeof(args[0]);
-        for(;i < numElem ; i++){
-            int fd =  open(args[i],O_TRUNC);
-            
-            if(fd < 0){
-                printf("%s\n", strerror(errno));
-                _exit(EXIT_FAILURE);
-            }//end if
-            char* path = "./";
-            int s = unlink(strcat(path, args[i]));
+    int curElem = 1;
+    while((args[curElem]) != NULL){
+        int fd = open(args[curElem], O_TRUNC);
+        printf(args[curElem]);
+        fflush(stdout);
+        if(fd < 0){
+            printf("%s\n", strerror(errno));
+            fflush(stdout);
+        }//end if
+
+        close(fd);
+        int unL = unlink(args[curElem]);
         
-            if(s < 0){
-                printf("%s\n", strerror(errno));
-                _exit(EXIT_FAILURE);
-            }//end if
-        }//end for
-    }//end if-else
+        if(unL < 0){
+            printf("%s\n", strerror(errno));
+            fflush(stdout);
+        }//end if
+
+        curElem++;
+    }//end while
 
 }//end do_file_remove()
 
@@ -111,8 +99,10 @@ void do_touch(char** args) {
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
      */                                                                         
     size_t i = 1;
+    printf("touch");
     size_t numElem = sizeof(args)/ sizeof(args[0]);
     for(;i < numElem; i++){
+        printf("for");
         int fd = open(args[i], O_CREAT, 0644);
         if(fd < 0){
             printf("%s\n", strerror(errno));

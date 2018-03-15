@@ -36,7 +36,6 @@
 #include "redirect.h"
 #include "builtin.h"
 #include "shellParser.h"
-
 /* Macros to test whether a process ID is a parent's or a child's. */
 #define PARENT_PID(pid) ((pid) > 0)
 #define CHILD_PID(pid)  ((pid) == 0)
@@ -47,14 +46,20 @@
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
-char* history[HIST_SIZE];
+char history[HIST_SIZE][LINE_SIZE];
 
 /*
  * Entry point of the application
  */
 int main(void) {
     char** line;
-    bzero(&history, HIST_SIZE);
+    printf("before bzero");
+    fflush(stdout);
+    for(int i = 0; i < HIST_SIZE;i++){
+        bzero(history[i],LINE_SIZE);     
+    }//end for
+
+    bzero(*history, HIST_SIZE);
 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
@@ -76,22 +81,27 @@ int main(void) {
         signal(SIGINT, signal_handler);
 
 
-
+   
 
     
     /* Read a line of input from the keyboard */
     line = prompt_and_read();
-
+    printf("before while");
+    fflush(stdout);
     /* While the line was blank or the user didn't type exit */
     while (line[0] == NULL || (strcmp(line[0], "exit") != 0)) {
         int lineIndex = 0; /* An index into the line array */
+        
+        printf("line");
+        fflush(stdout);
 
+        
         /* Ignore blank lines */
         if (line[lineIndex] != NULL) {
             int   status;
             char* args[MAX_ARGS]; /* A process's arguments */
 
-            /* Dig out the arguments for a single process */
+            /* Dig out the arguments for a single process */ 
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
@@ -104,15 +114,16 @@ int main(void) {
                 
                 for(; elem < numElem; elem++){
                     if(elem != 0)
-                        history[elem -1] = history[elem]; 
+                        strcpy(history[elem-1], history[elem]);
                 }
                
-                history[sizeof(history)] = origline;
+                strcpy(history[sizeof(history)/sizeof(history[0])] - 1, origline);
             
             }else{
-                history[sizeof(history)] = origline;
+                strcpy(history[sizeof(history)/sizeof(history[0])] - 1, origline);
             }
-
+        printf("after history");
+        fflush(stdout);
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
@@ -393,7 +404,7 @@ void pipe_wrapper(int pipefds[]) {
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
      */
-    if(sizeof(pipefds)/sizeof(pipefds[0]) < 2){
+    if( ( sizeof(pipefds) / sizeof(pipefds[0]) ) < 2){
         printf("Not enough arguments for pipe");
         _exit(EXIT_FAILURE);
     }//end if
