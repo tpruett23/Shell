@@ -53,13 +53,10 @@ char history[HIST_SIZE][LINE_SIZE];
  */
 int main(void) {
     char** line;
-    printf("before bzero");
+    printf("before memset\n");
     fflush(stdout);
-    for(int i = 0; i < HIST_SIZE;i++){
-        bzero(history[i],LINE_SIZE);     
-    }//end for
+    memset(history, 0, sizeof(history[0][0]) * HIST_SIZE * LINE_SIZE);
 
-    bzero(*history, HIST_SIZE);
 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
@@ -86,14 +83,9 @@ int main(void) {
     
     /* Read a line of input from the keyboard */
     line = prompt_and_read();
-    printf("before while");
-    fflush(stdout);
     /* While the line was blank or the user didn't type exit */
     while (line[0] == NULL || (strcmp(line[0], "exit") != 0)) {
         int lineIndex = 0; /* An index into the line array */
-        
-        printf("line");
-        fflush(stdout);
 
         
         /* Ignore blank lines */
@@ -105,23 +97,11 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-
+            
             char* origline = args[0]; // remember original arguments
-            
-            if(sizeof(history) >= HIST_SIZE){
-                size_t elem = 0;
-                size_t numElem = sizeof(history)/sizeof(history[0]);
-                
-                for(; elem < numElem; elem++){
-                    if(elem != 0)
-                        strcpy(history[elem-1], history[elem]);
-                }
-               
-                strcpy(history[sizeof(history)/sizeof(history[0])] - 1, origline);
-            
-            }else{
-                strcpy(history[sizeof(history)/sizeof(history[0])] - 1, origline);
-            }
+
+        strcpy(history[0], origline);
+
         printf("after history");
         fflush(stdout);
             /* Determine which command we are running*/

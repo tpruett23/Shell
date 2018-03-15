@@ -97,24 +97,24 @@ void do_touch(char** args) {
     /*                                                                          
      * TODO: Write code here that will modify the access time of a file(s) if it exists, or creat
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
-     */                                                                         
-    size_t i = 1;
-    printf("touch");
-    size_t numElem = sizeof(args)/ sizeof(args[0]);
-    for(;i < numElem; i++){
-        printf("for");
-        int fd = open(args[i], O_CREAT, 0644);
+     */   
+    int curElem = 1;
+    while((args[curElem]) != NULL){
+        int fd = open(args[curElem], O_CREAT, 0666);
         if(fd < 0){
             printf("%s\n", strerror(errno));
-            _exit(EXIT_FAILURE);
-        }//end if
-        char* path = "./";
-        int uT = utime(strcat(path, args[i]), NULL);
-        if(uT < 0){
-            printf("%s\n", strerror(errno));
-            _exit(EXIT_FAILURE);
         }
-    }//end for
+        close(fd);
+
+
+        int uT = utime(args[curElem], NULL);
+        if(uT < 0)
+            printf("%s\n", strerror(errno));
+
+        curElem++;
+    }
+    
+        //int uT = utime(args[i], NULL);
 }//end do_touch()
 
 /**
@@ -133,11 +133,14 @@ void do_touch(char** args) {
 void do_history(){
     /*                                                                          
      * TODO: Write code here that will print the last n command exeuted via this shell.
-     */                                                                         
-  size_t list = 0;
-  size_t numElem = sizeof(history)/sizeof(history[0]);
+     */
 
-   for(; list < numElem; list++){
-        fprintf(stdout, strcat(history[list], "\n"));
-   }//end for
+    int curElem =0;
+    while((strcmp(history[curElem], " ") != 0)){
+        printf(history[curElem]);
+        printf("\n");
+        fflush(stdout);
+        curElem++;
+    }
+
 }//end do_history()
