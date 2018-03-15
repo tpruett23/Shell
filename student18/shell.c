@@ -47,13 +47,13 @@
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
+char* history[HIST_SIZE];
 
 /*
  * Entry point of the application
  */
 int main(void) {
     char** line;
-    char* history[HIST_SIZE];
     bzero(&history, HIST_SIZE);
 
     /*
@@ -65,14 +65,19 @@ int main(void) {
      */            
 
 
-    signal(SIGINT, signal_handler);
-    void signal_handler(int sig){
+        void signal_handler(int sig){
         if(childPid != 0){
 
             kill(childPid,sig);
 
         }
     }
+
+        signal(SIGINT, signal_handler);
+
+
+
+
     
     /* Read a line of input from the keyboard */
     line = prompt_and_read();

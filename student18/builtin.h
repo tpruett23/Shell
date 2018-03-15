@@ -1,7 +1,7 @@
 #ifndef BUILTIN_H
     #define BUILTIN_H
     #include "shell.h"
-    #include "extra.c"
+    #include "extra.h"
     #include <errno.h>
     #include <string.h>
     #include <unistd.h>
