@@ -14,10 +14,13 @@
     #include <dirent.h>
     #include "shellParser.h"
     #include "history.h"
-
+    
+    #define HIST_SIZE 40
     /* Macros to test whether a process ID is a parent's or a child's. */
     #define PARENT_PID(pid) ((pid) > 0)
     #define CHILD_PID(pid)  ((pid) == 0)
+    
+    extern char** history;
 
     /* Function prototypes */
     char** prompt_and_read(void);

@@ -1,5 +1,5 @@
 #include "shell.h"
-
+#include "redirect.h"
 /*
  * append_redirection
  *
@@ -18,12 +18,12 @@ void append_redirection(char* filename) {
     int fd2 = open(filename, O_APPEND | O_CREAT, 0644); //new stdout
 
     if(!fd2){
-        perror(fd2);
-        dup(fd);
+        printf("%s\n", strerror(errno)); //print error message
+        dup(fd); //return stdout to normal
         _exit(EXIT_FAILURE);
     }//end if
     
-}
+}//end append redirection
 
 /*
  * stdout_redirection
@@ -44,8 +44,8 @@ void stdout_redirection(char* filename) {
     int fd2 = open(filename,O_TRUNC | O_CREAT, 0644); //new stdout
     
     if(!fd2){
-        perror(fd2);
-        dup(fd);
+        printf("%s\n", strerror(errno)); //print error message
+        dup(fd); //return stdout to normal
         _exit(EXIT_FAILURE);
     }//end if
     
@@ -70,7 +70,8 @@ void stderr_redirection(char* filename) {
     int fd2 = open(filename,O_TRUNC | O_CREAT); //new stderr
     
     if(fd2 < 0){
-        perror(fd2);
+        dup(fd); //return stderr to normal
+        printf("%s\n", strerror(errno)); //print error message
         dup(fd);
         _exit(EXIT_FAILURE);
     }//end if
@@ -100,10 +101,11 @@ void stdout_stderr_redirection(char* filename) {
         if(!fd3){
             dup(fd);
             dup(fd2);
-            perror(fd3);
+            printf("%s\n", strerror(errno)); //print error messae
             _exit(EXIT_FAILURE);
         }
-        int dup = dup(fd3);
+        dup(fd);
+        dup(fd2);
 
 
 }
@@ -125,15 +127,9 @@ void stdin_redirection(char* filename) {
     int fd2 = open(filename,O_TRUNC); //new stdin
 
     if(!fd2){
-        perror(fd2);
+        printf("%s\n", strerror(errno));
         dup(fd);
         _exit(EXIT_FAILURE);
-    }
-}
-
-
-
-
-
-}
+    }//end if
+}//end stdin_redirection
 

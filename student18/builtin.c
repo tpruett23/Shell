@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "builtin.h"
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
@@ -69,22 +70,30 @@ void do_file_remove(char** args) {
      * specified, print a usage message.
      */                                                                         
 
-    int i = 1;
-    int s;
+    
     if(sizeof(args)== 1){
         fprintf(stdout, "Usage: rm, filename1,filename2...");
     }else{
-
-        for(i; i < sizeof(args);i++){
+        size_t i = 1;
+        size_t numElem = sizeof(args)/sizeof(args[0]);
+        for(;i < numElem ; i++){
             int fd =  open(args[i],O_TRUNC);
-            int s = unlink("./"+args[i]);
-        }
-        if(s == -1){
-            printf("%s\n", strerror(errno));
-        }
-    }
+            
+            if(fd < 0){
+                printf("%s\n", strerror(errno));
+                _exit(EXIT_FAILURE);
+            }//end if
+            char* path = "./";
+            int s = unlink(strcat(path, args[i]));
+        
+            if(s < 0){
+                printf("%s\n", strerror(errno));
+                _exit(EXIT_FAILURE);
+            }//end if
+        }//end for
+    }//end if-else
 
-}
+}//end do_file_remove()
 
 /**
  * do_touch
@@ -100,13 +109,22 @@ void do_touch(char** args) {
      * TODO: Write code here that will modify the access time of a file(s) if it exists, or creat
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
      */                                                                         
-
-    for(int i = 1; i < sizeof(args); i++){
-        // create specified file, if file already exists time stampt is updated
+    size_t i = 1;
+    size_t numElem = sizeof(args)/ sizeof(args[0]);
+    for(;i < numElem; i++){
         int fd = open(args[i], O_CREAT, 0644);
-        close(fd);
-    }//end for 
-}
+        if(fd < 0){
+            printf("%s\n", strerror(errno));
+            _exit(EXIT_FAILURE);
+        }//end if
+        char* path = "./";
+        int uT = utime(strcat(path, args[i]), NULL);
+        if(uT < 0){
+            printf("%s\n", strerror(errno));
+            _exit(EXIT_FAILURE);
+        }
+    }//end for
+}//end do_touch()
 
 /**
  * do_history
@@ -121,12 +139,14 @@ void do_touch(char** args) {
  *        args[0] is "touch", additional arguments are in args[1] ... n.
  *        args[x] = NULL indicates the end of the argument list.
  */
-void do_history(char** args) {
+void do_history(){
     /*                                                                          
      * TODO: Write code here that will print the last n command exeuted via this shell.
      */                                                                         
-   
-   for(int list = 0; list < sizeof(history); list++){
-        fprintf(stdout, history[list] + "\n");
-   }
-}
+  size_t list = 0;
+  size_t numElem = sizeof(history)/sizeof(history[0]);
+
+   for(; list < numElem; list++){
+        fprintf(stdout, strcat(history[list], "\n"));
+   }//end for
+}//end do_history()

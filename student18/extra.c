@@ -19,5 +19,5 @@ char* Malloc(size_t size, int num){
         printf("Error with malloc");
         _exit(EXIT_FAILURE);
     }
-    return temp
+    return temp;
 }

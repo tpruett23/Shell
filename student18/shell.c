@@ -54,7 +54,6 @@ static pid_t childPid = 0;
 int main(void) {
     char** line;
     char* history[HIST_SIZE];
-    extern char** history;
     bzero(&history, HIST_SIZE);
 
     /*
@@ -91,13 +90,20 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-            char* origline = args; // remember the original argumnets 
+
+            char* origline = args[0]; // remember original arguments
+            
             if(sizeof(history) >= HIST_SIZE){
-                for(int elem = 0; elem < sizeof(history); elem++){
+                size_t elem = 0;
+                size_t numElem = sizeof(history)/sizeof(history[0]);
+                
+                for(; elem < numElem; elem++){
                     if(elem != 0)
-                        history[elem -1] = history[elem];
+                        history[elem -1] = history[elem]; 
                 }
+               
                 history[sizeof(history)] = origline;
+            
             }else{
                 history[sizeof(history)] = origline;
             }
@@ -110,7 +116,7 @@ int main(void) {
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
             } else if (strcmp(args[0], "history") == 0) {
-                do_history(history);
+                do_history();
             } else {
                 /* Fork off a child process */
                 childPid = fork_wrapper();
@@ -132,13 +138,11 @@ int main(void) {
 
                     if(childPid  == 0){
                         printf("Child %d has exited with status 0", childPid);
-                        else{
-
-                            childPid =  waitpid(-1,NULL,NULL);
-                        }
-                    }
-            }
-        }
+                    }else{
+                        childPid =  waitpid(-1, &status,0);
+                }//end if-else
+             }//end if-else
+        }//end if-else
 
         /* Read the next line of input from the keyboard */
         line = prompt_and_read();
@@ -264,14 +268,13 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
         int rd = dup2(STDIN_FILENO, pipefd[1]);
 
         if(rd < 0){
-            printf("%s\n",stderr("Standard Output Error"));//Use better error message later.
+            printf("Standard Output Error\n");//Use better error message later.
             _exit(1);
         }
 
 
 
 
-        char* buffer = Malloc(sizeof(char), 1024) //define size later
 
             /*
              * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
@@ -279,9 +282,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
              * specified program.  (Here, in p1Args)
              */
 
-            char* prog = args[0];
+            char* prog = p1Args[0];
 
-        int replace = execvp(prog,args);
+        int replace = execvp(prog, line[*lineIndex]);
 
         if(replace == -1){
             printf("%s\n", strerror(errno));
@@ -307,9 +310,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
         int rd = dup2(STDIN_FILENO, pipefd[0]);
 
         if(rd < 0){
-            printf("%s\n",stderr("Standard Input Error");
-                    _exit(1);
-                    }
+            printf("%s\n", strerror(errno));
+            _exit(1);
+        }
 
 
 
@@ -389,7 +392,7 @@ void pipe_wrapper(int pipefds[]) {
      * is less than 0, use perror() to print an error message and the _exit system call to
      * terminate the program.                                             
      */
-    if(sizeof(pipefds) < 2){
+    if(sizeof(pipefds)/sizeof(pipefds[0]) < 2){
         printf("Not enough arguments for pipe");
         _exit(EXIT_FAILURE);
     }//end if
