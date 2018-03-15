@@ -267,19 +267,15 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
+        close(STDOUT_FILENO);
 
-        close(pipefd[1]);
-
-        int rd = dup2(STDIN_FILENO, pipefd[1]);
+        int rd = dup2(STDOUT_FILENO, pipefd[1]);
+        
 
         if(rd < 0){
             printf("Standard Output Error\n");//Use better error message later.
             _exit(1);
         }
-
-
-
-
 
             /*
              * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
@@ -287,9 +283,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
              * specified program.  (Here, in p1Args)
              */
 
-            char* prog = p1Args[0];
+        char* prog = p1Args[0];
 
-        int replace = execvp(prog, line[*lineIndex]);
+        int replace = execvp(prog, line);
 
         if(replace == -1){
             printf("%s\n", strerror(errno));
@@ -310,7 +306,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
 
 
-        close(pipefd[0]);
+        close(STDIN_FILENO);
 
         int rd = dup2(STDIN_FILENO, pipefd[0]);
 
