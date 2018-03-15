@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "extra.h"
 
 #define num_bytes 256
 
@@ -31,7 +32,7 @@ void do_file_list(char** args) {
     }//end if
 
 
-    char* temp = Malloc(sizeof(char), num_bytes);
+    char* temp = malloc(sizeof(char) * num_bytes);
 
     int num = read(fdR, temp, num_bytes);
     
