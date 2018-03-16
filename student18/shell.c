@@ -53,8 +53,6 @@ char history[HIST_SIZE][LINE_SIZE];
  */
 int main(void) {
     char** line;
-    printf("before memset\n");
-    fflush(stdout);
 
     memset(history, 0, sizeof(history[0][0]) * HIST_SIZE * LINE_SIZE);
 
@@ -104,8 +102,6 @@ int main(void) {
 
         strcpy(history[0], origline);
 
-        printf("after history");
-        fflush(stdout);
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
@@ -257,8 +253,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
      * used for interprocess communication.
      */
     
-    close(0);
-    close(1);
+    
 
     pipe_wrapper(pipefd);
 
@@ -277,18 +272,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
         fflush(stdout);
 
         close(pipefd[0]);
+        close(1);
 
-        printf("before dup2");
-        fflush(stdout);
-
-
-      
-        
-
-        if(rd < 0){
-            printf("Standard Output Error\n");//Use better error message later.
-            _exit(1);
-        }
+     
 
             /*
              * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
@@ -298,12 +284,13 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
         char* prog = p1Args[0];
 
-
-
         /* Replacing the in-memory process image and starting the specified 
          * program.
          */
         //int replace = execvp(prog, p1Args);
+        
+       int rd = dup_wrapper(pipefd[1]);
+
 
         /* Checking to see if any errors were thrown while replacing.*/
         if(execvp(prog,p1Args) == -1){
@@ -323,28 +310,21 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
-        
+        close(0);
+        int rd =  dup_wrapper(pipefd[0]);
+           
 
-        close(pipefd[1]);
-        wait(NULL);
+       close(pipefd[1]);
+       
+      
 
-         if(execvp(prog,p1Args) == -1){
-            printf("%s\n", strerror(errno));
-            _exit(EXIT_FAILURE);
-        }
+     
+  /* Read the args for the next process in the pipeline */
+        parse_args(args, line, lineIndex);
 
- 
-
-
-
-
-
-       /* Read the args for the next process in the pipeline */
-                    parse_args(args, line, lineIndex);
-
-                    /* And keep going... */
-                    proccess_line(line, lineIndex, args);
-                    }
+  /* And keep going... */
+       proccess_line(line, lineIndex, args);
+     }        
 }
 
 /*
