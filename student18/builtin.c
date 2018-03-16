@@ -24,6 +24,7 @@ void do_file_list(char** args) {
      * directory was specified, the current directory).
      */
      
+    /* The current directory.*/
      DIR* curDir;
      if(args[1] == NULL){
         curDir = opendir("./");
@@ -36,7 +37,8 @@ void do_file_list(char** args) {
         fflush(stdout);
         _exit(EXIT_FAILURE);
      }//end if
-        
+     
+     /* The struct to use readdir to read the directory and access the struct.*/   
      struct dirent *entry;
      while( (entry = readdir(curDir)) != NULL)
          printf(" %s\n", entry->d_name);
@@ -63,17 +65,24 @@ void do_file_remove(char** args) {
 
     int curElem = 1;
     while((args[curElem]) != NULL){
+        /* File descriptor when opening file.*/
         int fd = open(args[curElem], O_TRUNC);
         printf(args[curElem]);
         fflush(stdout);
+
+        /* Checking to make sure the opening the file was successful.*/
         if(fd < 0){
             printf("%s\n", strerror(errno));
             fflush(stdout);
         }//end if
 
         close(fd);
+
+        /* The int unlink returns when unlinking the file from the directory.*/
         int unL = unlink(args[curElem]);
         
+
+        /* Checking to see if unlinking was successful.*/
         if(unL < 0){
             printf("%s\n", strerror(errno));
             fflush(stdout);

@@ -46,7 +46,7 @@
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
-char history[HIST_SIZE][LINE_SIZE];
+//char history[HIST_SIZE][LINE_SIZE];
 
 /*
  * Entry point of the application
@@ -55,6 +55,7 @@ int main(void) {
     char** line;
     printf("before memset\n");
     fflush(stdout);
+
     memset(history, 0, sizeof(history[0][0]) * HIST_SIZE * LINE_SIZE);
 
 
@@ -65,17 +66,17 @@ int main(void) {
      * signal hander should deliver the received signal to the process with pid 'childPid'
      * (above).  Note that when 'childPid' contains 0, the signal should be ignored.
      */            
-
+    
+     /*
+      * sig -The signal to send with childPid
+      */
 
         void signal_handler(int sig){
-        if(childPid != 0){
-
+        if(childPid != 0){//Making sure the childPid does not contain 0.
             kill(childPid,sig);
-
         }
     }
-
-        signal(SIGINT, signal_handler);
+        signal(SIGINT, signal_handler);//Registering signal_handler function.
 
 
    
@@ -112,7 +113,7 @@ int main(void) {
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
             } else if (strcmp(args[0], "history") == 0) {
-                do_history();
+                do_history(args);
             } else {
                 /* Fork off a child process */
                 childPid = fork_wrapper();
@@ -130,10 +131,10 @@ int main(void) {
                      *        Where 123 here is the process id of the child and 0 is the exit
                      *        status of that process.
                      */
-
-
+                    
+                    /* Checking to see if the process is the child.*/
                     if(childPid  == 0){
-                        printf("Child %d has exited with status 0", childPid);
+                        printf("Child %d has exited with status %s", childPid,&status);
                     }else{
                         childPid =  waitpid(-1, &status,0);
                 }//end if-else
@@ -176,7 +177,12 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 
         char* prog = args[0];
 
+        /*Starting the process that is in args by replacing the in-memory 
+         * process image.*/
         int replace = execvp(prog,args);
+
+
+        /*Checking to make sure the system call above did not have any errors.*/
         if(replace == -1){
             printf("%s\n", strerror(errno));
             _exit(EXIT_FAILURE);
@@ -246,7 +252,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can be
      * used for interprocess communication.
      */
-    pipe(pipefd);
+    pipe_wrapper(pipefd);
 
     /* Fork the current process */
     pid = fork_wrapper();
@@ -276,8 +282,14 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
         char* prog = p1Args[0];
 
+
+
+        /* Replacing the in-memory process image and starting the specified 
+         * program.
+         */
         int replace = execvp(prog, line);
 
+        /* Checking to see if any errors were thrown while replacing.*/
         if(replace == -1){
             printf("%s\n", strerror(errno));
             _exit(EXIT_FAILURE);
