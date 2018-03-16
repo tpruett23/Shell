@@ -251,11 +251,18 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
     int   pipefd[2]; /* Array of integers to hold 2 file descriptors. */
     pid_t pid;       /* PID of a child process */
 
+
     /*
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can be
      * used for interprocess communication.
      */
+    
+    close(0);
+    close(1);
+
     pipe_wrapper(pipefd);
+
+
 
     /* Fork the current process */
     pid = fork_wrapper();
@@ -269,13 +276,13 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
         fflush(stdout);
 
-        close(STDOUT_FILENO);
+        close(pipefd[0]);
 
         printf("before dup2");
         fflush(stdout);
 
 
-        int rd = dup2(STDOUT_FILENO, pipefd[1]);
+      
         
 
         if(rd < 0){
@@ -316,16 +323,17 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
+        
 
+        close(pipefd[1]);
+        wait(NULL);
 
-        close(STDIN_FILENO);
-
-        int rd = dup2(STDIN_FILENO, pipefd[0]);
-
-        if(rd < 0){
+         if(execvp(prog,p1Args) == -1){
             printf("%s\n", strerror(errno));
-            _exit(1);
+            _exit(EXIT_FAILURE);
         }
+
+ 
 
 
 
