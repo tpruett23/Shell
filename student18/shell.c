@@ -46,7 +46,7 @@
  * When the value of this variable is 0, there are no running children.
  */
 static pid_t childPid = 0;
-//char history[HIST_SIZE][LINE_SIZE];
+char history[HIST_SIZE][LINE_SIZE];
 
 /*
  * Entry point of the application
@@ -71,12 +71,13 @@ int main(void) {
       * sig -The signal to send with childPid
       */
 
-        void signal_handler(int sig){
+    void signal_handler(int sig){
         if(childPid != 0){//Making sure the childPid does not contain 0.
             kill(childPid,sig);
-        }
-    }
-        signal(SIGINT, signal_handler);//Registering signal_handler function.
+        }//end if
+    }//end signak_handler
+
+    signal(SIGINT, signal_handler);//Registering signal_handler function.
 
 
    
@@ -113,7 +114,7 @@ int main(void) {
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
             } else if (strcmp(args[0], "history") == 0) {
-                do_history(args);
+                do_history();
             } else {
                 /* Fork off a child process */
                 childPid = fork_wrapper();
@@ -176,6 +177,8 @@ void proccess_line(char** line, int* lineIndex, char** args) {
          */
 
         char* prog = args[0];
+
+       
 
         /*Starting the process that is in args by replacing the in-memory 
          * process image.*/
@@ -265,6 +268,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
 
         close(STDOUT_FILENO);
+
+        printf("before dup2");
+        fflush(stdout);
+
 
         int rd = dup2(STDOUT_FILENO, pipefd[1]);
         

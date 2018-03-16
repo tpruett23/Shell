@@ -107,6 +107,8 @@ void do_touch(char** args) {
      * TODO: Write code here that will modify the access time of a file(s) if it exists, or creat
      * the file(s) if it does not exist.  If no file list is specified, print a usage message.
      */   
+    printf("touch\n");
+    fflush(stdout);
     int curElem = 1;
     while((args[curElem]) != NULL){
         int fd = open(args[curElem], O_CREAT, 0666);
