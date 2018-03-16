@@ -135,7 +135,7 @@ int main(void) {
                     
                     /* Checking to see if the process is the child.*/
                     if(childPid  == 0){
-                        printf("Child %d has exited with status %s", childPid,&status);
+                        printf("Child %d has exited with status %d", childPid,&status);
                     }else{
                         childPid =  waitpid(-1, &status,0);
                 }//end if-else
@@ -267,6 +267,8 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
+        fflush(stdout);
+
         close(STDOUT_FILENO);
 
         printf("before dup2");
@@ -294,10 +296,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
         /* Replacing the in-memory process image and starting the specified 
          * program.
          */
-        int replace = execvp(prog, line);
+        //int replace = execvp(prog, p1Args);
 
         /* Checking to see if any errors were thrown while replacing.*/
-        if(replace == -1){
+        if(execvp(prog,p1Args) == -1){
             printf("%s\n", strerror(errno));
             _exit(EXIT_FAILURE);
         }
@@ -329,7 +331,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
 
 
-                    /* Read the args for the next process in the pipeline */
+       /* Read the args for the next process in the pipeline */
                     parse_args(args, line, lineIndex);
 
                     /* And keep going... */

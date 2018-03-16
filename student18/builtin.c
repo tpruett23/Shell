@@ -148,6 +148,7 @@ void do_history(){
 
     int curElem =0;
     while((strcmp(history[curElem], " ") != 0)){
+       
         printf(history[curElem]);
         printf("\n");
         fflush(stdout);
