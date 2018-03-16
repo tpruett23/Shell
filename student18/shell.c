@@ -118,7 +118,7 @@ int main(void) {
                 if (CHILD_PID(childPid)) {
                     /* The child shell continues to process the command line */
                     proccess_line(line, &lineIndex, args);
-                } else 
+                } else{ 
                     /*
                      * TODO:  Write code here to wait for the child process to die.  When the
                      * child finally does die, include a printf that prints a message like:
@@ -130,11 +130,11 @@ int main(void) {
                      */
                     
                     /* Checking to see if the process is the child.*/
-                    if(childPid  == 0){
-                        printf("Child %d has exited with status %d", childPid,&status);
-                    }else{
                         childPid =  waitpid(-1, &status,0);
-                }//end if-else
+
+                        printf("Child %d has exited with status %d\n", childPid,status);
+                   }
+                                     
              }//end if-else
         }//end if-else
 
@@ -289,7 +289,8 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
         //int replace = execvp(prog, p1Args);
         
-       int rd = dup_wrapper(pipefd[1]);
+       dup_wrapper(pipefd[1]);
+
 
 
         /* Checking to see if any errors were thrown while replacing.*/
@@ -311,7 +312,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
 
         close(0);
-        int rd =  dup_wrapper(pipefd[0]);
+        dup_wrapper(pipefd[0]);
            
 
        close(pipefd[1]);
