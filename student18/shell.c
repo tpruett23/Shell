@@ -52,7 +52,7 @@ static pid_t childPid = 0;
  */
 int main(void) {
     char** line;
-
+ 
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
      * 'signal' system call here to put that handler in place for the SIGINT signal.  (The SIGINT
