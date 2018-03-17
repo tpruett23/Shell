@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "extra.h"
+#include "history.h"
 
 #define num_bytes 256
 /**
@@ -152,14 +153,6 @@ void do_history(){
     /*                                                                          
      * TODO: Write code here that will print the last n command exeuted via this shell.
      */
-    /* The current element in the history[].*/
-    int curElem = 0;
-    while((strcmp(history[curElem], " ") != 0)){
-       /* Printing the current command/element in history[].*/
-        printf(history[curElem]);
-        printf("\n");
-        fflush(stdout);
-        curElem++;
-    }
+    add_Hist(NULL);
 
 }//end do_history()
