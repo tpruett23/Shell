@@ -8,8 +8,13 @@
 #include "extra.h"
 
 #define num_bytes 256
-
 /**
+ * The class contains the code to perform ls,touch,rm,and history in shell.
+ *@author Melchor Dominguez,Tori Pruett
+ *@version 3/16/18
+ */
+
+/*
  * do_file_list
  *
  * Implements a built-in version of the 'ls' command.
@@ -112,20 +117,22 @@ void do_touch(char** args) {
     int curElem = 1;
     while((args[curElem]) != NULL){
         int fd = open(args[curElem], O_CREAT, 0666);
+        /* Checking to make sure the open was sucessful.*/
         if(fd < 0){
             printf("%s\n", strerror(errno));
         }
         close(fd);
 
-
+        /*Setting the modification time.*/
         int uT = utime(args[curElem], NULL);
+        /*Checking for errors when using utime()*/
         if(uT < 0)
             printf("%s\n", strerror(errno));
 
         curElem++;
     }
     
-        //int uT = utime(args[i], NULL);
+        
 }//end do_touch()
 
 /**
@@ -145,10 +152,10 @@ void do_history(){
     /*                                                                          
      * TODO: Write code here that will print the last n command exeuted via this shell.
      */
-
-    int curElem =0;
+    /* The current element in the history[].*/
+    int curElem = 0;
     while((strcmp(history[curElem], " ") != 0)){
-       
+       /* Printing the current command/element in history[].*/
         printf(history[curElem]);
         printf("\n");
         fflush(stdout);

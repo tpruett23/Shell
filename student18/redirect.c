@@ -1,5 +1,14 @@
 #include "shell.h"
 #include "redirect.h"
+
+/**
+ *  The class redirects standard output, standard input, standard error.
+ *  @author Melchor Dominguez, Tori Pruett
+ *  @version 3/16/18
+ */
+
+
+
 /*
  * append_redirection
  *
@@ -42,6 +51,7 @@ void stdout_redirection(char* filename) {
     int fd = dup(1); //remember original stdout
     close(1); //close stdout
     int fd2 = open(filename,O_WRONLY | O_TRUNC | O_CREAT, 0644); //new stdout
+    /* Checking to see if there were errors when opening.*/
     if(!fd2){
         close(fd2);
         dup(fd);
