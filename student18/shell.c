@@ -52,7 +52,7 @@ static pid_t childPid = 0;
  */
 int main(void) {
     char** line;
- 
+
     /*
      * TODO:  Define a signal handler function below, add a function prototype above, and call the
      * 'signal' system call here to put that handler in place for the SIGINT signal.  (The SIGINT
@@ -112,7 +112,7 @@ int main(void) {
                 if (CHILD_PID(childPid)) {
                     /* The child shell continues to process the command line */
                     proccess_line(line, &lineIndex, args);
-                } else 
+                } else{ 
                     /*
                      * TODO:  Write code here to wait for the child process to die.  When the
                      * child finally does die, include a printf that prints a message like:
@@ -124,11 +124,11 @@ int main(void) {
                      */
                     
                     /* Checking to see if the process is the child.*/
-                    if(childPid  == 0){
-                        printf("Child %d has exited with status %d", childPid,&status);
-                    }else{
                         childPid =  waitpid(-1, &status,0);
-                }//end if-else
+
+                        printf("Child %d has exited with status %d\n", childPid,status);
+                   }
+                                     
              }//end if-else
         }//end if-else
 
@@ -247,8 +247,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
      * used for interprocess communication.
      */
     
-    close(0);
-    close(1);
+    
 
     pipe_wrapper(pipefd);
 
@@ -267,18 +266,9 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
         fflush(stdout);
 
         close(pipefd[0]);
+        close(1);
 
-        printf("before dup2");
-        fflush(stdout);
-
-
-      
-        
-
-        if(rd < 0){
-            printf("Standard Output Error\n");//Use better error message later.
-            _exit(1);
-        }
+     
 
             /*
              * TODO:  We're ready to start our pipeline!  Replace the call to the 'exit' system call
@@ -288,12 +278,14 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
 
         char* prog = p1Args[0];
 
-
-
         /* Replacing the in-memory process image and starting the specified 
          * program.
          */
         //int replace = execvp(prog, p1Args);
+        
+       dup_wrapper(pipefd[1]);
+
+
 
         /* Checking to see if any errors were thrown while replacing.*/
         if(execvp(prog,p1Args) == -1){
@@ -313,28 +305,21 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
-        
+        close(0);
+        dup_wrapper(pipefd[0]);
+           
 
-        close(pipefd[1]);
-        wait(NULL);
+       close(pipefd[1]);
+       
+      
 
-         if(execvp(prog,p1Args) == -1){
-            printf("%s\n", strerror(errno));
-            _exit(EXIT_FAILURE);
-        }
+     
+  /* Read the args for the next process in the pipeline */
+        parse_args(args, line, lineIndex);
 
- 
-
-
-
-
-
-       /* Read the args for the next process in the pipeline */
-                    parse_args(args, line, lineIndex);
-
-                    /* And keep going... */
-                    proccess_line(line, lineIndex, args);
-                    }
+  /* And keep going... */
+       proccess_line(line, lineIndex, args);
+     }        
 }
 
 /*
